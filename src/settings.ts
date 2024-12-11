@@ -141,7 +141,7 @@ export class ExMemoSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName(t("taggingOptions"))
 			.setDesc(t("taggingOptionsDesc"))
-			.setHeading().setClass('setting-heading-2');
+			.setHeading().setClass('setting-item-nested');
 		new Setting(containerEl)
 			.setName(t("extractTags"))
 			.setDesc(t("extractTagsDesc"))
@@ -180,7 +180,7 @@ export class ExMemoSettingTab extends PluginSettingTab {
 			});
 		new Setting(containerEl).setName(t("description"))
 			.setDesc(t("descriptionDesc"))
-			.setHeading().setClass('setting-heading-2');
+			.setHeading().setClass('setting-item-nested');
 		new Setting(containerEl)
 			.setName(t("descriptionPrompt"))
 			.setDesc(t("descriptionPromptDesc"))
