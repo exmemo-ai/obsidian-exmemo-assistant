@@ -23,7 +23,6 @@ export default {
   "modelName": "Model name",
   //
   "metaUpdateSetting": "Update meta",
-  "basics": "Basics",
   "updateMetaOptions": "Update",
   "updateMetaOptionsDesc": "If it already exists, choose whether to regenerate",
   "updateForce": "Force update existing items",

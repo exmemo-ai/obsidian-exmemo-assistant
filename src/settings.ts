@@ -46,7 +46,7 @@ export class ExMemoSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl).setName(t("llmSettings"))
-			.setHeading().setClass('setting-heading-1');
+			.setHeading();
 		new Setting(containerEl)
 			.setName(t("apiKey"))
 			.addText(text => text
@@ -76,13 +76,11 @@ export class ExMemoSettingTab extends PluginSettingTab {
 				}));
 		//
 		new Setting(containerEl).setName(t("metaUpdateSetting"))
-			.setHeading().setClass('setting-heading-1');
-		new Setting(containerEl).setName(t('basics'))
-			.setHeading().setClass('setting-heading-2');
+			.setHeading();
 		new Setting(containerEl)
 			.setName(t("updateMetaOptions"))
 			.setDesc(t("updateMetaOptionsDesc"))
-			.setClass('item-setting-2')
+			.setClass('setting-item-nested')
 			.addDropdown((dropdown) => {
 				dropdown
 					.addOption('force', t("updateForce"))
@@ -97,7 +95,7 @@ export class ExMemoSettingTab extends PluginSettingTab {
 		const toggleCutSetting = new Setting(containerEl)
 			.setName(t("truncateContent"))
 			.setDesc(t("truncateContentDesc"))
-			.setClass('item-setting-2')
+			.setClass('setting-item-nested')
 			.addToggle((toggle) => {
 				toggle.setValue(this.plugin.settings.metaIsTruncate)
 					.onChange(async (value) => {
@@ -111,7 +109,7 @@ export class ExMemoSettingTab extends PluginSettingTab {
 		const maxTokensSetting = new Setting(containerEl)
 			.setName(t("maxContentLength"))
 			.setDesc(t("maxContentLengthDesc"))
-			.setClass('item-setting-3')
+			.setClass('setting-item-nested-2')
 			.addText((text) => {
 				text.setValue(this.plugin.settings.metaMaxTokens.toString())
 					.onChange(async (value) => {
@@ -123,7 +121,7 @@ export class ExMemoSettingTab extends PluginSettingTab {
 		const truncateSetting = new Setting(containerEl)
 			.setName(t("truncateMethod"))
 			.setDesc(t("truncateMethodDesc"))
-			.setClass('item-setting-3')
+			.setClass('setting-item-nested-2')
 			.addDropdown((dropdown) => {
 				dropdown
 					.addOption('head_only', t("head_only"))
@@ -147,7 +145,7 @@ export class ExMemoSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName(t("extractTags"))
 			.setDesc(t("extractTagsDesc"))
-			.setClass('item-setting-2')
+			.setClass('setting-item-nested')
 			.addButton((btn) => {
 				btn.setButtonText(t("extract"))
 					.setCta()
@@ -169,7 +167,7 @@ export class ExMemoSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName(t("tagList"))
 			.setDesc(t("tagListDesc"))
-			.setClass('item-setting-2')
+			.setClass('setting-item-nested')
 			.addTextArea((text) => {
 				textComponent = text;
 				text.setValue(this.plugin.settings.tags.join('\n'))
@@ -186,7 +184,7 @@ export class ExMemoSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName(t("descriptionPrompt"))
 			.setDesc(t("descriptionPromptDesc"))
-			.setClass('item-setting-2')
+			.setClass('setting-item-nested')
 			.addTextArea((text) => {
 				text.setValue(this.plugin.settings.metaDescription)
 					.onChange(async (value) => {
