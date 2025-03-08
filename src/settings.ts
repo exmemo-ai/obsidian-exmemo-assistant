@@ -19,6 +19,11 @@ export interface ExMemoSettings {
 	metaEditTimeEnabled: boolean;
 	metaEditTimeFormat: string;
 	selectExcludedFolders: string[];
+	metaTagsFieldName: string;
+	metaDescriptionFieldName: string;
+	metaTitleFieldName: string;
+	metaUpdatedFieldName: string;
+	metaCreatedFieldName: string;
 }
 
 export const DEFAULT_SETTINGS: ExMemoSettings = {
@@ -38,4 +43,9 @@ export const DEFAULT_SETTINGS: ExMemoSettings = {
 	metaEditTimeEnabled: true,
 	metaEditTimeFormat: 'YYYY-MM-DD HH:mm:ss',
 	selectExcludedFolders: [],
+	metaTagsFieldName: 'tags',
+	metaDescriptionFieldName: 'description',
+	metaTitleFieldName: 'title',
+	metaUpdatedFieldName: 'updated',
+	metaCreatedFieldName: 'created',
 }

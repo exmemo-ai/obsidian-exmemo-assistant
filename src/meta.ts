@@ -29,7 +29,7 @@ export async function adjustMdMeta(app: App, settings: ExMemoSettings) {
     const force = settings.metaUpdateMethod === 'force';
     
     // 添加标签和描述
-    if (!frontMatter.tags || !frontMatter.description || force) {
+    if (!frontMatter[settings.metaTagsFieldName] || !frontMatter[settings.metaDescriptionFieldName] || force) {
         await addMetaByLLM(file, app, settings, force);
         hasChanges = true;
     }
@@ -42,10 +42,10 @@ export async function adjustMdMeta(app: App, settings: ExMemoSettings) {
     
     // 添加标题生成逻辑 - 只在功能启用时执行
     if (settings.metaTitleEnabled) {
-        if (!frontMatter.title || force) {
+        if (!frontMatter[settings.metaTitleFieldName] || force) {
             try {
                 const title = await generateTitle(content, settings);
-                updateFrontMatter(file, app, 'title', title, force ? 'update' : 'keep');
+                updateFrontMatter(file, app, settings.metaTitleFieldName, title, force ? 'update' : 'keep');
                 hasChanges = true;
             } catch (error) {
                 console.error('生成标题时出错:', error);
@@ -57,14 +57,15 @@ export async function adjustMdMeta(app: App, settings: ExMemoSettings) {
     // 添加时间相关元数据 - 只在功能启用时执行
     if (settings.metaEditTimeEnabled) {
         try {
-            // 更新编辑时间 - 使用update模式确保字段会被创建
-            const now = moment().format(settings.metaEditTimeFormat);
-            updateFrontMatter(file, app, 'updated', now, 'update');
+            // 使用原生 JavaScript Date 对象代替 moment
+            const now = new Date();
+            const formattedNow = formatDate(now, settings.metaEditTimeFormat);
+            updateFrontMatter(file, app, settings.metaUpdatedFieldName, formattedNow, 'update');
             
-            // 添加创建时间 - 也使用update模式确保字段会被创建
-            const created = file.stat.ctime;
-            const createdDate = new Date(created).toISOString().split('T')[0];
-            updateFrontMatter(file, app, 'created', createdDate, 'update');
+            // 添加创建时间
+            const created = new Date(file.stat.ctime);
+            const createdDate = formatDate(created, 'YYYY-MM-DD');
+            updateFrontMatter(file, app, settings.metaCreatedFieldName, createdDate, 'update');
             
             hasChanges = true;
         } catch (error) {
@@ -80,7 +81,7 @@ export async function adjustMdMeta(app: App, settings: ExMemoSettings) {
 
 async function addMetaByLLM(file: TFile, app: App, settings: ExMemoSettings, force: boolean = false) {
     const fm = app.metadataCache.getFileCache(file);
-    if (fm?.frontmatter?.tags && fm?.frontmatter.description && !force) {
+    if (fm?.frontmatter?.[settings.metaTagsFieldName] && fm?.frontmatter[settings.metaDescriptionFieldName] && !force) {
         console.warn(t('fileAlreadyContainsTagsAndDescription'));
         return;
     }
@@ -122,11 +123,11 @@ ${content_str}`;
     
     if (ret_json.tags) {
         const tags = ret_json.tags.split(',');
-        updateFrontMatter(file, app, 'tags', tags, 'append');
+        updateFrontMatter(file, app, settings.metaTagsFieldName, tags, 'append');
     }
     
     if (ret_json.description) {
-        updateFrontMatter(file, app, 'description', ret_json.description, 'update');
+        updateFrontMatter(file, app, settings.metaDescriptionFieldName, ret_json.description, 'update');
     }
 }
 
@@ -194,6 +195,25 @@ function truncateContent(content: string, maxTokens: number, method: string): st
         default:
             return content.substring(0, maxTokens);
     }
+}
+
+// 添加简单的日期格式化函数
+function formatDate(date: Date, format: string): string {
+    // 简单的格式化实现，支持基本的 YYYY-MM-DD HH:mm:ss 格式
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    
+    return format
+        .replace('YYYY', year.toString())
+        .replace('MM', month)
+        .replace('DD', day)
+        .replace('HH', hours)
+        .replace('mm', minutes)
+        .replace('ss', seconds);
 }
 
 

@@ -250,5 +250,61 @@ export class ExMemoSettingTab extends PluginSettingTab {
 						window.open('https://buymeacoffee.com/xieyan0811y', '_blank');
 					});
 			});
+
+		// 添加元数据字段名自定义部分
+		new Setting(containerEl)
+			.setName('自定义字段名')
+			.setDesc('自定义生成的元数据字段名称')
+			.setHeading();
+		
+		new Setting(containerEl)
+			.setName('标签字段名')
+			.setDesc('自动生成标签使用的字段名 (默认: tags)')
+			.addText(text => text
+				.setValue(this.plugin.settings.metaTagsFieldName)
+				.onChange(async (value) => {
+					this.plugin.settings.metaTagsFieldName = value || 'tags';
+					await this.plugin.saveSettings();
+				}));
+		
+		new Setting(containerEl)
+			.setName('描述字段名')
+			.setDesc('自动生成描述使用的字段名 (默认: description)')
+			.addText(text => text
+				.setValue(this.plugin.settings.metaDescriptionFieldName)
+				.onChange(async (value) => {
+					this.plugin.settings.metaDescriptionFieldName = value || 'description';
+					await this.plugin.saveSettings();
+				}));
+		
+		new Setting(containerEl)
+			.setName('标题字段名')
+			.setDesc('自动生成标题使用的字段名 (默认: title)')
+			.addText(text => text
+				.setValue(this.plugin.settings.metaTitleFieldName)
+				.onChange(async (value) => {
+					this.plugin.settings.metaTitleFieldName = value || 'title';
+					await this.plugin.saveSettings();
+				}));
+		
+		new Setting(containerEl)
+			.setName('更新时间字段名')
+			.setDesc('自动更新编辑时间使用的字段名 (默认: updated)')
+			.addText(text => text
+				.setValue(this.plugin.settings.metaUpdatedFieldName)
+				.onChange(async (value) => {
+					this.plugin.settings.metaUpdatedFieldName = value || 'updated';
+					await this.plugin.saveSettings();
+				}));
+		
+		new Setting(containerEl)
+			.setName('创建时间字段名')
+			.setDesc('自动生成创建时间使用的字段名 (默认: created)')
+			.addText(text => text
+				.setValue(this.plugin.settings.metaCreatedFieldName)
+				.onChange(async (value) => {
+					this.plugin.settings.metaCreatedFieldName = value || 'created';
+					await this.plugin.saveSettings();
+				}));
 	}
 } 
