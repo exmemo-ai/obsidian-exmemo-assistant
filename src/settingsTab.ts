@@ -238,18 +238,7 @@ export class ExMemoSettingTab extends PluginSettingTab {
 
 		editTimeFormatSetting.setDisabled(!this.plugin.settings.metaEditTimeEnabled);
 
-		// 捐赠部分
-		new Setting(containerEl).setName(t('donate')).setHeading();
-		new Setting(containerEl)
-			.setName(t('supportThisPlugin'))
-			.setDesc(t('supportThisPluginDesc'))
-			.addButton((button) => {
-				button.setButtonText(t('bugMeACoffee'))
-					.setCta()
-					.onClick(() => {
-						window.open('https://buymeacoffee.com/xieyan0811y', '_blank');
-					});
-			});
+
 
 		// 添加元数据字段名自定义部分
 		new Setting(containerEl)
@@ -306,5 +295,18 @@ export class ExMemoSettingTab extends PluginSettingTab {
 					this.plugin.settings.metaCreatedFieldName = value || 'created';
 					await this.plugin.saveSettings();
 				}));
+
+						// 捐赠部分
+		new Setting(containerEl).setName(t('donate')).setHeading();
+		new Setting(containerEl)
+			.setName(t('supportThisPlugin'))
+			.setDesc(t('supportThisPluginDesc'))
+			.addButton((button) => {
+				button.setButtonText(t('bugMeACoffee'))
+					.setCta()
+					.onClick(() => {
+						window.open('https://buymeacoffee.com/xieyan0811y', '_blank');
+					});
+			});
 	}
 } 
