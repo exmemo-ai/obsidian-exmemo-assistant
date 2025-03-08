@@ -4,7 +4,6 @@ import { getContent } from './utils';
 import { callLLM } from "./utils";
 import { t } from './lang/helpers';
 import { updateFrontMatter } from './utils';
-import moment from 'moment';
 
 export async function adjustMdMeta(app: App, settings: ExMemoSettings) {
     const file = app.workspace.getActiveFile();
@@ -57,7 +56,7 @@ export async function adjustMdMeta(app: App, settings: ExMemoSettings) {
     // 添加时间相关元数据 - 只在功能启用时执行
     if (settings.metaEditTimeEnabled) {
         try {
-            // 使用原生 JavaScript Date 对象代替 moment
+            // 使用原生 JavaScript Date 对象
             const now = new Date();
             const formattedNow = formatDate(now, settings.metaEditTimeFormat);
             updateFrontMatter(file, app, settings.metaUpdatedFieldName, formattedNow, 'update');
@@ -197,7 +196,7 @@ function truncateContent(content: string, maxTokens: number, method: string): st
     }
 }
 
-// 添加简单的日期格式化函数
+// 使用自定义的日期格式化函数
 function formatDate(date: Date, format: string): string {
     // 简单的格式化实现，支持基本的 YYYY-MM-DD HH:mm:ss 格式
     const year = date.getFullYear();

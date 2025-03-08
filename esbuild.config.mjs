@@ -11,6 +11,8 @@ if you want to view the source, please visit the github repository of this plugi
 
 const prod = (process.argv[2] === "production");
 
+const dir = './dist/';
+
 const context = await esbuild.context({
 	banner: {
 		js: banner,
@@ -37,7 +39,7 @@ const context = await esbuild.context({
 	logLevel: "info",
 	sourcemap: prod ? false : "inline",
 	treeShaking: true,
-	outfile: "main.js",
+	outdir: dir,
 	minify: prod,
 });
 
