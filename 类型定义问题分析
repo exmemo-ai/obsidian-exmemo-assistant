@@ -1,0 +1,6 @@
+我需要分析helpers.ts中的TKey类型定义和zh.ts中的翻译项是否匹配。从错误信息看，有些翻译键在TKey中定义了但在zh.ts中可能缺失，或者DEFAULT_SETTINGS中使用了未在TKey中定义的键。
+
+需要确保:
+1. 所有在代码中使用t()函数的地方，传入的键都在TKey类型中定义
+2. 所有在TKey中定义的键都在zh.ts中有对应的翻译
+3. 检查DEFAULT_SETTINGS中使用t()的地方是否正确 
