@@ -1,7 +1,0 @@
-我需要修复meta.ts文件中的几个问题:
-1. 缺少frontMatter和content变量的定义
-2. 缺少hasChanges变量的定义
-3. 缺少truncateContent函数的实现
-4. callLLM函数参数不匹配
-
-这些问题导致了编译错误。我需要重构meta.ts文件，确保标题和编辑时间功能正确实现。 
