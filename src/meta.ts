@@ -15,10 +15,7 @@ export async function adjustMdMeta(app: App, settings: ExMemoSettings) {
         new Notice(t('currentFileNotMarkdown'));
         return;
     }
-    
-    // 读取文件内容
-    let content = await getContent(app, null, -1, '');
-    
+        
     // 解析前置元数据
     const fm = app.metadataCache.getFileCache(file);
     let frontMatter = fm?.frontmatter || {};
@@ -43,7 +40,7 @@ export async function adjustMdMeta(app: App, settings: ExMemoSettings) {
     if (settings.metaTitleEnabled) {
         if (!frontMatter[settings.metaTitleFieldName] || force) {
             try {
-                const title = await generateTitle(content, settings);
+                const title = await generateTitle(app, settings);
                 updateFrontMatter(file, app, settings.metaTitleFieldName, title, force ? 'update' : 'keep');
                 hasChanges = true;
             } catch (error) {
@@ -136,11 +133,13 @@ function addOthersMeta(file: TFile, app: App) {
 }
 
 // 生成标题的函数
-async function generateTitle(content: string, settings: ExMemoSettings): Promise<string> {
+async function generateTitle(app: App, settings: ExMemoSettings): Promise<string> {
     // 如果内容过长，根据截断设置处理
-    let processedContent = content;
-    if (settings.metaIsTruncate && content.length > settings.metaMaxTokens) {
-        processedContent = truncateContent(content, settings.metaMaxTokens, settings.metaTruncateMethod);
+    let processedContent = '';
+    if (settings.metaIsTruncate) {
+        processedContent = await getContent(app, null, settings.metaMaxTokens, settings.metaTruncateMethod);
+    } else {
+        processedContent = await getContent(app, null, -1, '');
     }
     
     // 调用 LLM 生成标题

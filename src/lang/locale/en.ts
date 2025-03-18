@@ -16,6 +16,7 @@ export default {
   "parseError": "Failed to parse the returned result",
   "exmemoAdjustMeta": "Generate meta data",
   "defaultSummaryPrompt": "Summarize the core content of the article directly without using phrases like 'this article.' The summary should be no more than 50 words, and in the same language as the content.",
+  "metaUpdated": "Meta data updated",
   //
   "llmSettings": "LLM",
   "apiKey": "API key",
@@ -47,6 +48,38 @@ export default {
   "descriptionDesc": "Automatically generating article descriptions",
   "descriptionPrompt": "Prompt",
   "descriptionPromptDesc": "Prompt for generating descriptions",
+
+  // title
+  "title": "Title",
+  "titleDesc": "Automatically generate document titles",
+  "enableTitle": "Enable auto title generation",
+  "enableTitleDesc": "Enable to automatically generate document titles",
+  "titlePrompt": "Title prompt",
+  "titlePromptDesc": "Prompt for generating titles",
+  "defaultTitlePrompt": "Please generate a concise and clear title for this document, no more than 10 words, and do not use quotes.",
+  
+  // edit time
+  "editTime": "Edit time",
+  "editTimeDesc": "Automatically update the edit time of the document",
+  "enableEditTime": "Enable auto update edit time",
+  "enableEditTimeDesc": "Enable to automatically update the edit time of the document",
+  "editTimeFormat": "Edit time format",
+  "editTimeFormatDesc": "Set the format of the edit time",
+
+  // custom fields
+  "customFieldNames": "Custom field names",
+  "customFieldNamesDesc": "Custom field names for metadata",
+  "tagsFieldName": "Tags field name",
+  "tagsFieldNameDesc": "Field name used for automatically generating tags (default: tags)",
+  "descriptionFieldName": "Description field name",
+  "descriptionFieldNameDesc": "Field name used for automatically generating descriptions (default: description)",
+  "titleFieldName": "Title field name",
+  "titleFieldNameDesc": "Field name used for automatically generating titles (default: title)",
+  "updateTimeFieldName": "Update time field name",
+  "updateTimeFieldNameDesc": "Field name used for automatically updating the update time (default: updated)",
+  "createTimeFieldName": "Create time field name",
+  "createTimeFieldNameDesc": "Field name used for automatically updating the create time (default: created)",
+
   //
   'donate': 'Donate',
   'bugMeACoffee': 'Buy me a coffee',

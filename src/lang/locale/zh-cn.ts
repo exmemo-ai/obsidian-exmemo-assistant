@@ -1,34 +1,38 @@
 // 简体中文
 
 export default {
+    // 基本翻译
     "confirm": "确认",
     "yes": "是",
     "no": "否",
     "llmLoading": "LLM 思考中...",
     "noResult": "LLM 无结果",
     "pleaseOpenFile": "请先打开一个文件",
-    "llmError": "发生了一个错误，请稍后再试",
+    "llmError": "LLM 错误",
     "inputPrompt":"请输入提示词",
     "chatButton": "对话",
-    "pleaseSelectText": "请先选择要处理的文本",
+    "pleaseSelectText": "请先选择文本",
     "currentFileNotMarkdown": "当前文件不是 markdown 文件",
     "fileAlreadyContainsTagsAndDescription": "文件已经包含标签和描述",
-    "parseError": "解析返回结果失败",
-    "exmemoAdjustMeta": "生成元数据",
-    "defaultSummaryPrompt": "直接总结文章的核心内容，不要使用'这篇文章'这样的短语，不超过50个字，且与内容使用相同语言回答。",
-    //
+    "parseError": "解析错误",
+    "metaUpdated": "元数据已更新",
+
+    // 设置相关
     "llmSettings": "LLM",
-    "apiKey": "API Key",
-    "baseUrl": "Base URL",
+    "apiKey": "API 密钥",
+    "baseUrl": "基础 URL",
     "modelName": "模型名称",
-    //
+
+    // 元数据更新设置
     "metaUpdateSetting": "更新元数据",
     "updateMetaOptions": "更新选项",
     "updateMetaOptionsDesc": "如果已经存在，是否重新生成",
-    "updateForce": "强制更新已存在项",
+    "updateForce": "强制更新",
     "updateNoLLM": "只更新不用LLM的项",
+
+    // 内容截断设置
     "truncateContent": "内容太长是否截断",
-    "truncateContentDesc": "使用LLM时，如果内容超过最大字数，是否截断（以节约token）",
+    "truncateContentDesc": "使用LLM时，如果内容超过最大字数，是否截断",
     "maxContentLength": "最大内容长度",
     "maxContentLengthDesc": "设置内容的最大 token 限制",
     "truncateMethod": "截断方式",
@@ -36,20 +40,60 @@ export default {
     "head_only": "仅提取开头部分",
     "head_tail": "提取开头和结尾部分",
     "heading": "提取标题及其下方的文字",
+
+    // 标签设置
     "taggingOptions": "标签",
     "taggingOptionsDesc": "自动生成标签",
     "extractTags": "提取标签",
-    "extractTagsDesc": "从所有笔记中提取出现超过两次的标签，并填入候选框中",
+    "extractTagsDesc": "从所有笔记中提取出现超过两次的标签",
     "extract": "提取",
     "tagList": "标签列表",
     "tagListDesc": "可选标签列表，使用回车分隔",
+
+    // 描述设置
     "description": "描述",
     "descriptionDesc": "自动生成文章描述",
-    "descriptionPrompt": "提示词",
+    "descriptionPrompt": "描述提示词",
     "descriptionPromptDesc": "用于生成描述的提示词",
-    //
-    'donate': '捐赠',
-    'bugMeACoffee': '请我喝咖啡',
-    'supportThisPlugin': '支持此插件',
-    'supportThisPluginDesc': '如果您觉得这个插件有用，请考虑请我喝杯咖啡！',
+    "defaultSummaryPrompt": "直接总结文章的核心内容，不要使用'这篇文章'这样的短语，不超过50个字，且与内容使用相同语言回答。",
+
+    // 标题相关
+    "title": "标题",
+    "titleDesc": "自动生成文档标题",
+    "enableTitle": "启用自动生成标题",
+    "enableTitleDesc": "启用后将自动生成文档标题",
+    "titlePrompt": "标题生成提示词",
+    "titlePromptDesc": "用于生成标题的提示词",
+    "defaultTitlePrompt": "请为这篇文档生成一个简洁明了的标题，不超过10个字，不要使用引号。",
+    
+    // 编辑时间相关
+    "editTime": "编辑时间",
+    "editTimeDesc": "自动更新文档编辑时间",
+    "enableEditTime": "启用自动更新编辑时间",
+    "enableEditTimeDesc": "启用后将自动更新文档的编辑时间",
+    "editTimeFormat": "时间格式",
+    "editTimeFormatDesc": "编辑时间的格式，使用 moment.js 格式",
+
+    // 自定义字段名相关
+    "customFieldNames": "自定义字段名",
+    "customFieldNamesDesc": "自定义生成的元数据字段名称",
+    "tagsFieldName": "标签字段名",
+    "tagsFieldNameDesc": "自动生成标签使用的字段名 (默认: tags)",
+    "descriptionFieldName": "描述字段名",
+    "descriptionFieldNameDesc": "自动生成描述使用的字段名 (默认: description)",
+    "titleFieldName": "标题字段名",
+    "titleFieldNameDesc": "自动生成标题使用的字段名 (默认: title)",
+    "updateTimeFieldName": "更新时间字段名",
+    "updateTimeFieldNameDesc": "自动更新编辑时间使用的字段名 (默认: updated)",
+    "createTimeFieldName": "创建时间字段名",
+    "createTimeFieldNameDesc": "自动生成创建时间使用的字段名 (默认: created)",
+
+    // 捐赠相关
+    "donate": "捐赠",
+    "supportThisPlugin": "支持此插件",
+    "supportThisPluginDesc": "如果您喜欢这个插件，可以请我喝杯咖啡",
+    "bugMeACoffee": "请我喝杯咖啡",
+
+    // 命令相关
+    "exmemoAdjustMeta": "生成元数据"
 }

@@ -242,13 +242,13 @@ export class ExMemoSettingTab extends PluginSettingTab {
 
 		// 添加元数据字段名自定义部分
 		new Setting(containerEl)
-			.setName('自定义字段名')
-			.setDesc('自定义生成的元数据字段名称')
+			.setName(t('customFieldNames'))
+			.setDesc(t('customFieldNamesDesc'))
 			.setHeading();
 		
 		new Setting(containerEl)
-			.setName('标签字段名')
-			.setDesc('自动生成标签使用的字段名 (默认: tags)')
+			.setName(t('tagsFieldName'))
+			.setDesc(t('tagsFieldNameDesc'))
 			.addText(text => text
 				.setValue(this.plugin.settings.metaTagsFieldName)
 				.onChange(async (value) => {
@@ -257,8 +257,8 @@ export class ExMemoSettingTab extends PluginSettingTab {
 				}));
 		
 		new Setting(containerEl)
-			.setName('描述字段名')
-			.setDesc('自动生成描述使用的字段名 (默认: description)')
+			.setName(t('descriptionFieldName'))
+			.setDesc(t('descriptionFieldNameDesc'))
 			.addText(text => text
 				.setValue(this.plugin.settings.metaDescriptionFieldName)
 				.onChange(async (value) => {
@@ -267,8 +267,8 @@ export class ExMemoSettingTab extends PluginSettingTab {
 				}));
 		
 		new Setting(containerEl)
-			.setName('标题字段名')
-			.setDesc('自动生成标题使用的字段名 (默认: title)')
+			.setName(t('titleFieldName'))
+			.setDesc(t('titleFieldNameDesc'))
 			.addText(text => text
 				.setValue(this.plugin.settings.metaTitleFieldName)
 				.onChange(async (value) => {
@@ -277,8 +277,8 @@ export class ExMemoSettingTab extends PluginSettingTab {
 				}));
 		
 		new Setting(containerEl)
-			.setName('更新时间字段名')
-			.setDesc('自动更新编辑时间使用的字段名 (默认: updated)')
+			.setName(t('updateTimeFieldName'))
+			.setDesc(t('updateTimeFieldNameDesc'))
 			.addText(text => text
 				.setValue(this.plugin.settings.metaUpdatedFieldName)
 				.onChange(async (value) => {
@@ -287,8 +287,8 @@ export class ExMemoSettingTab extends PluginSettingTab {
 				}));
 		
 		new Setting(containerEl)
-			.setName('创建时间字段名')
-			.setDesc('自动生成创建时间使用的字段名 (默认: created)')
+			.setName(t('createTimeFieldName'))
+			.setDesc(t('createTimeFieldNameDesc'))
 			.addText(text => text
 				.setValue(this.plugin.settings.metaCreatedFieldName)
 				.onChange(async (value) => {
@@ -309,4 +309,4 @@ export class ExMemoSettingTab extends PluginSettingTab {
 					});
 			});
 	}
-} 
+}
