@@ -98,6 +98,21 @@ export default {
   "fieldKey": "Field name",
   "fieldValue": "Field value",
 
+  // Category Settings
+  "categoryOptions": "Category",
+  "categoryOptionsDesc": "Automatically select appropriate category for articles",
+  "enableCategory": "Enable auto category",
+  "enableCategoryDesc": "Enable to automatically select category for documents",
+  "categoryFieldName": "Category field name",
+  "categoryFieldNameDesc": "Field name used for automatically generating category (default: category)",
+  "categoryList": "Category list",
+  "categoryListDesc": "Optional category list, separated by line breaks",
+  "metaCategoryPrompt": "Category prompt",
+  "metaCategoryPromptDesc": "Prompt for generating category",
+  "defaultCategoryPrompt": "Please select a suitable category for this document",
+  "categoryUnknown": "Unknown",
+  "defaultCategories": "[\"Travel\", \"Shopping\", \"Mood\", \"Book Review\", \"Tech & Knowledge\", \"Entertainment\", \"Papers to Read\", \"Ideas & Inspiration\", \"Todo\", \"Methodology\", \"Work Thoughts\", \"Investment\", \"Books to Read\", \"Personal Info\", \"Accounting\", \"Tasks\", \"Health\", \"Excerpts\", \"Daily Life\", \"Worldview\", \"Food\"]",
+
   // Donation Related
   "donate": "Donate",
   "supportThisPlugin": "Support this plugin",

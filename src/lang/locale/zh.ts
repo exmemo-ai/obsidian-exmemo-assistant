@@ -98,6 +98,21 @@ export default {
     "fieldKey": "字段名",
     "fieldValue": "字段值",
 
+    // 类别设置相关
+    "categoryOptions": "类别",
+    "categoryOptionsDesc": "自动为文章选择合适的类别",
+    "enableCategory": "启用自动分类",
+    "enableCategoryDesc": "启用后将自动为文档选择类别",
+    "categoryFieldName": "类别字段名",
+    "categoryFieldNameDesc": "自动生成类别使用的字段名 (默认: category)",
+    "categoryList": "类别列表",
+    "categoryListDesc": "可选类别列表，使用回车分隔",
+    "metaCategoryPrompt": "类别生成提示词",
+    "metaCategoryPromptDesc": "用于生成类别的提示词",
+    "defaultCategoryPrompt": "请为这篇文档选择一个合适的类别",
+    "categoryUnknown": "未分类",
+    "defaultCategories": "[\"旅行\", \"购物\", \"心情\", \"读后感\", \"知识科技\", \"娱乐\", \"待读论文\", \"灵感创意\", \"待办事项\", \"方法论\", \"工作思考\", \"投资\", \"待读书\", \"个人信息\", \"记帐\", \"待做\", \"健康\", \"摘录\", \"日常琐事\", \"世界观\", \"美食\"]",
+
     // 捐赠相关
     "donate": "捐赠",
     "supportThisPlugin": "支持此插件",

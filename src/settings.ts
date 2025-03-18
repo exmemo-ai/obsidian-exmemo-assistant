@@ -24,6 +24,10 @@ export interface ExMemoSettings {
 	metaCreatedFieldName: string;
 	metaTagsPrompt: string;
 	customMetadata: Array<{key: string, value: string}>;
+	metaCategoryFieldName: string;
+	categories: string[];
+	metaCategoryPrompt: string;
+	metaCategoryEnabled: boolean;
 }
 
 export const DEFAULT_SETTINGS: ExMemoSettings = {
@@ -50,4 +54,8 @@ export const DEFAULT_SETTINGS: ExMemoSettings = {
 	metaCreatedFieldName: 'created',
 	metaTagsPrompt: t('defaultTagsPrompt'),
 	customMetadata: [],
+	metaCategoryFieldName: 'category',
+	categories: JSON.parse(t('defaultCategories')),
+	metaCategoryPrompt: t('defaultCategoryPrompt'),
+	metaCategoryEnabled: true,
 }

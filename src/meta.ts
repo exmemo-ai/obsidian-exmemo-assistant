@@ -27,7 +27,8 @@ export async function adjustMdMeta(app: App, settings: ExMemoSettings) {
     // 添加标签、描述和标题
     if (!frontMatter[settings.metaTagsFieldName] || 
         !frontMatter[settings.metaDescriptionFieldName] || 
-        (settings.metaTitleEnabled && !frontMatter[settings.metaTitleFieldName]) || 
+        (settings.metaTitleEnabled && !frontMatter[settings.metaTitleFieldName]) ||
+        (settings.metaCategoryEnabled && !frontMatter[settings.metaCategoryFieldName]) ||
         force) {
         await addMetaByLLM(file, app, settings, force);
         hasChanges = true;
@@ -83,19 +84,27 @@ async function addMetaByLLM(file: TFile, app: App, settings: ExMemoSettings, for
     
     const option_list = settings.tags;
     const options = option_list.join(',');
+    let categories = settings.categories.join(',');
+    if (categories === '') {
+        categories = t('categoryUnknown');
+    }
 
-    const req = `I need to generate tags, description, and title for the following article. Requirements:
+    const req = `I need to generate tags, category, description, and title for the following article. Requirements:
 
 1. Tags: ${settings.metaTagsPrompt}
    Available tags: ${options}. Feel free to create new ones if none are suitable.
 
-2. Description: ${settings.metaDescription}
+2. Category: ${settings.metaCategoryPrompt}
+   Available categories: ${categories}. Must choose ONE from the available categories.
 
-3. Title: ${settings.metaTitlePrompt}
+3. Description: ${settings.metaDescription}
+
+4. Title: ${settings.metaTitlePrompt}
 
 Please return in the following JSON format:
 {
     "tags": "tag1,tag2,tag3",
+    "category": "category_name",
     "description": "brief summary",
     "title": "article title"
 }
@@ -110,11 +119,11 @@ ${content_str}`;
     }
     ret = ret.replace(/`/g, '');
 
-    let ret_json = {} as { tags?: string; description?: string; title?: string };
+    let ret_json = {} as { tags?: string; category?: string; description?: string; title?: string };
     try {
         let json_str = ret.match(/{[^]*}/);
         if (json_str) {
-            ret_json = JSON.parse(json_str[0]) as { tags?: string; description?: string; title?: string };
+            ret_json = JSON.parse(json_str[0]) as { tags?: string; category?: string; description?: string; title?: string };
         }        
     } catch (error) {
         new Notice(t('parseError') + "\n" + error);
@@ -127,6 +136,10 @@ ${content_str}`;
         updateFrontMatter(file, app, settings.metaTagsFieldName, tags, 'append');
     }
     
+    if (ret_json.category && settings.metaCategoryEnabled) {
+        updateFrontMatter(file, app, settings.metaCategoryFieldName, ret_json.category, 'update');
+    }
+
     if (ret_json.description) {
         updateFrontMatter(file, app, settings.metaDescriptionFieldName, ret_json.description, 'update');
     }

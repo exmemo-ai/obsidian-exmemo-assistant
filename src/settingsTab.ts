@@ -166,21 +166,79 @@ export class ExMemoSettingTab extends PluginSettingTab {
 				text.inputEl.addClass('setting-textarea');
 			});
 
-			// 添加标签提示词设置
-			new Setting(containerEl)
-				.setName(t('metaTagsPrompt'))
-				.setDesc(t('metaTagsPromptDesc'))
-				.setClass('setting-item-nested')
-				.addTextArea(text => {
-					text.setPlaceholder(this.plugin.settings.metaTagsPrompt)
-						.setValue(this.plugin.settings.metaTagsPrompt)
-						.onChange(async (value) => {
-							this.plugin.settings.metaTagsPrompt = value;
-							await this.plugin.saveSettings();
-						});
-					text.inputEl.setAttr('rows', '3');
-					text.inputEl.addClass('setting-textarea');
-				});
+		// 添加标签提示词设置
+		new Setting(containerEl)
+			.setName(t('metaTagsPrompt'))
+			.setDesc(t('metaTagsPromptDesc'))
+			.setClass('setting-item-nested')
+			.addTextArea(text => {
+				text.setPlaceholder(this.plugin.settings.metaTagsPrompt)
+					.setValue(this.plugin.settings.metaTagsPrompt)
+					.onChange(async (value) => {
+						this.plugin.settings.metaTagsPrompt = value;
+						await this.plugin.saveSettings();
+					});
+				text.inputEl.setAttr('rows', '3');
+				text.inputEl.addClass('setting-textarea');
+			});
+
+		// 类别设置部分
+		new Setting(containerEl).setName(t("categoryOptions"))
+			.setDesc(t("categoryOptionsDesc"))
+			.setHeading().setClass('setting-item-nested');
+		
+		new Setting(containerEl)
+			.setName(t('enableCategory'))
+			.setDesc(t('enableCategoryDesc'))
+			.setClass('setting-item-nested')
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.metaCategoryEnabled)
+				.onChange(async (value) => {
+					this.plugin.settings.metaCategoryEnabled = value;
+					await this.plugin.saveSettings();
+				}));
+			
+		// 添加类别字段名设置
+		new Setting(containerEl)
+			.setName(t('categoryFieldName'))
+			.setDesc(t('categoryFieldNameDesc'))
+			.setClass('setting-item-nested')
+			.addText(text => text
+				.setValue(this.plugin.settings.metaCategoryFieldName)
+				.onChange(async (value) => {
+					this.plugin.settings.metaCategoryFieldName = value || 'category';
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName(t("categoryList"))
+			.setDesc(t("categoryListDesc"))
+			.setClass('setting-item-nested')
+			.addTextArea((text) => {
+				text.setValue(this.plugin.settings.categories.join('\n'))
+					.onChange(async (value) => {
+						this.plugin.settings.categories = value.split('\n').map(cat => cat.trim()).filter(cat => cat !== '');
+						await this.plugin.saveSettings();
+					});
+				text.inputEl.setAttr('rows', '5');
+				text.inputEl.addClass('setting-textarea');
+			});
+
+		// 添加类别提示词设置
+		new Setting(containerEl)
+			.setName(t('metaCategoryPrompt'))
+			.setDesc(t('metaCategoryPromptDesc'))
+			.setClass('setting-item-nested')
+			.addTextArea(text => {
+				text.setPlaceholder(this.plugin.settings.metaCategoryPrompt)
+					.setValue(this.plugin.settings.metaCategoryPrompt)
+					.onChange(async (value) => {
+						this.plugin.settings.metaCategoryPrompt = value;
+						await this.plugin.saveSettings();
+					});
+				text.inputEl.setAttr('rows', '3');
+				text.inputEl.addClass('setting-textarea');
+			});
 
 		// 描述设置部分
 		new Setting(containerEl).setName(t("description"))
