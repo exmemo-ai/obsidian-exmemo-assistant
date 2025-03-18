@@ -116,6 +116,19 @@ export class ExMemoSettingTab extends PluginSettingTab {
 		new Setting(containerEl).setName(t("taggingOptions"))
 			.setDesc(t("taggingOptionsDesc"))
 			.setHeading().setClass('setting-item-nested');
+		
+		// 添加标签字段名设置
+		new Setting(containerEl)
+			.setName(t('tagsFieldName'))
+			.setDesc(t('tagsFieldNameDesc'))
+			.setClass('setting-item-nested')
+			.addText(text => text
+				.setValue(this.plugin.settings.metaTagsFieldName)
+				.onChange(async (value) => {
+					this.plugin.settings.metaTagsFieldName = value || 'tags';
+					await this.plugin.saveSettings();
+				}));
+
 		new Setting(containerEl)
 			.setName(t("extractTags"))
 			.setDesc(t("extractTagsDesc"))
@@ -173,6 +186,19 @@ export class ExMemoSettingTab extends PluginSettingTab {
 		new Setting(containerEl).setName(t("description"))
 			.setDesc(t("descriptionDesc"))
 			.setHeading().setClass('setting-item-nested');
+		
+		// 添加描述字段名设置
+		new Setting(containerEl)
+			.setName(t('descriptionFieldName'))
+			.setDesc(t('descriptionFieldNameDesc'))
+			.setClass('setting-item-nested')
+			.addText(text => text
+				.setValue(this.plugin.settings.metaDescriptionFieldName)
+				.onChange(async (value) => {
+					this.plugin.settings.metaDescriptionFieldName = value || 'description';
+					await this.plugin.saveSettings();
+				}));
+
 		new Setting(containerEl)
 			.setName(t("descriptionPrompt"))
 			.setDesc(t("descriptionPromptDesc"))
@@ -192,6 +218,18 @@ export class ExMemoSettingTab extends PluginSettingTab {
 			.setDesc(t("titleDesc"))
 			.setHeading().setClass('setting-item-nested');
 		
+		// 添加标题字段名设置
+		new Setting(containerEl)
+			.setName(t('titleFieldName'))
+			.setDesc(t('titleFieldNameDesc'))
+			.setClass('setting-item-nested')
+			.addText(text => text
+				.setValue(this.plugin.settings.metaTitleFieldName)
+				.onChange(async (value) => {
+					this.plugin.settings.metaTitleFieldName = value || 'title';
+					await this.plugin.saveSettings();
+				}));
+
 		new Setting(containerEl)
 			.setName(t("enableTitle"))
 			.setDesc(t("enableTitleDesc"))
@@ -226,6 +264,30 @@ export class ExMemoSettingTab extends PluginSettingTab {
 			.setDesc(t("editTimeDesc"))
 			.setHeading().setClass('setting-item-nested');
 		
+		// 添加更新时间字段名设置
+		new Setting(containerEl)
+			.setName(t('updateTimeFieldName'))
+			.setDesc(t('updateTimeFieldNameDesc'))
+			.setClass('setting-item-nested')
+			.addText(text => text
+				.setValue(this.plugin.settings.metaUpdatedFieldName)
+				.onChange(async (value) => {
+					this.plugin.settings.metaUpdatedFieldName = value || 'updated';
+					await this.plugin.saveSettings();
+				}));
+
+		// 添加创建时间字段名设置
+		new Setting(containerEl)
+			.setName(t('createTimeFieldName'))
+			.setDesc(t('createTimeFieldNameDesc'))
+			.setClass('setting-item-nested')
+			.addText(text => text
+				.setValue(this.plugin.settings.metaCreatedFieldName)
+				.onChange(async (value) => {
+					this.plugin.settings.metaCreatedFieldName = value || 'created';
+					await this.plugin.saveSettings();
+				}));
+
 		new Setting(containerEl)
 			.setName(t("enableEditTime"))
 			.setDesc(t("enableEditTimeDesc"))
@@ -254,65 +316,49 @@ export class ExMemoSettingTab extends PluginSettingTab {
 
 		editTimeFormatSetting.setDisabled(!this.plugin.settings.metaEditTimeEnabled);
 
-
-
-		// 添加元数据字段名自定义部分
+		// 添加自定义元数据设置
 		new Setting(containerEl)
-			.setName(t('customFieldNames'))
-			.setDesc(t('customFieldNamesDesc'))
-			.setHeading();
-		
-		new Setting(containerEl)
-			.setName(t('tagsFieldName'))
-			.setDesc(t('tagsFieldNameDesc'))
-			.addText(text => text
-				.setValue(this.plugin.settings.metaTagsFieldName)
-				.onChange(async (value) => {
-					this.plugin.settings.metaTagsFieldName = value || 'tags';
+			.setName(t('customMetadata'))
+			.setDesc(t('customMetadataDesc'))
+			.setHeading().setClass('setting-item-nested')
+			.addButton(button => button
+				.setButtonText(t('addField'))
+				.onClick(async () => {
+					this.plugin.settings.customMetadata.push({
+						key: '',
+						value: ''
+					});
 					await this.plugin.saveSettings();
-				}));
-		
-		new Setting(containerEl)
-			.setName(t('descriptionFieldName'))
-			.setDesc(t('descriptionFieldNameDesc'))
-			.addText(text => text
-				.setValue(this.plugin.settings.metaDescriptionFieldName)
-				.onChange(async (value) => {
-					this.plugin.settings.metaDescriptionFieldName = value || 'description';
-					await this.plugin.saveSettings();
-				}));
-		
-		new Setting(containerEl)
-			.setName(t('titleFieldName'))
-			.setDesc(t('titleFieldNameDesc'))
-			.addText(text => text
-				.setValue(this.plugin.settings.metaTitleFieldName)
-				.onChange(async (value) => {
-					this.plugin.settings.metaTitleFieldName = value || 'title';
-					await this.plugin.saveSettings();
-				}));
-		
-		new Setting(containerEl)
-			.setName(t('updateTimeFieldName'))
-			.setDesc(t('updateTimeFieldNameDesc'))
-			.addText(text => text
-				.setValue(this.plugin.settings.metaUpdatedFieldName)
-				.onChange(async (value) => {
-					this.plugin.settings.metaUpdatedFieldName = value || 'updated';
-					await this.plugin.saveSettings();
-				}));
-		
-		new Setting(containerEl)
-			.setName(t('createTimeFieldName'))
-			.setDesc(t('createTimeFieldNameDesc'))
-			.addText(text => text
-				.setValue(this.plugin.settings.metaCreatedFieldName)
-				.onChange(async (value) => {
-					this.plugin.settings.metaCreatedFieldName = value || 'created';
-					await this.plugin.saveSettings();
+					this.display();
 				}));
 
-						// 捐赠部分
+		// 显示现有的自定义元数据字段
+		this.plugin.settings.customMetadata.forEach((meta, index) => {
+			const setting = new Setting(containerEl)
+				.addText(text => text
+					.setPlaceholder(t('fieldKey'))
+					.setValue(meta.key)
+					.onChange(async (value) => {
+						this.plugin.settings.customMetadata[index].key = value;
+						await this.plugin.saveSettings();
+					}))
+				.addText(text => text
+					.setPlaceholder(t('fieldValue'))
+					.setValue(meta.value)
+					.onChange(async (value) => {
+						this.plugin.settings.customMetadata[index].value = value;
+						await this.plugin.saveSettings();
+					}))
+				.addButton(button => button
+					.setIcon('trash')
+					.onClick(async () => {
+						this.plugin.settings.customMetadata.splice(index, 1);
+						await this.plugin.saveSettings();
+						this.display();
+					}));
+		});
+
+		// 捐赠部分
 		new Setting(containerEl).setName(t('donate')).setHeading();
 		new Setting(containerEl)
 			.setName(t('supportThisPlugin'))

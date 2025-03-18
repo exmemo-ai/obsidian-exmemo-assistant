@@ -91,6 +91,13 @@ export default {
     "createTimeFieldName": "创建时间字段名",
     "createTimeFieldNameDesc": "自动生成创建时间使用的字段名 (默认: created)",
 
+    // 自定义元数据相关
+    "customMetadata": "自定义元数据",
+    "customMetadataDesc": "添加自定义的元数据字段，如：author=作者名",
+    "addField": "添加字段",
+    "fieldKey": "字段名",
+    "fieldValue": "字段值",
+
     // 捐赠相关
     "donate": "捐赠",
     "supportThisPlugin": "支持此插件",

@@ -91,6 +91,13 @@ export default {
   "createTimeFieldName": "Create time field name",
   "createTimeFieldNameDesc": "Field name used for automatically updating the create time (default: created)",
 
+  // Custom Metadata
+  "customMetadata": "Custom metadata",
+  "customMetadataDesc": "Add custom metadata fields, e.g.: author=Author Name",
+  "addField": "Add field",
+  "fieldKey": "Field name",
+  "fieldValue": "Field value",
+
   // Donation Related
   "donate": "Donate",
   "supportThisPlugin": "Support this plugin",

@@ -139,6 +139,15 @@ ${content_str}`;
         }
         updateFrontMatter(file, app, settings.metaTitleFieldName, title, force ? 'update' : 'keep');
     }
+
+    // 添加自定义元数据
+    if (settings.customMetadata && settings.customMetadata.length > 0) {
+        for (const meta of settings.customMetadata) {
+            if (meta.key && meta.value) {
+                updateFrontMatter(file, app, meta.key, meta.value, force ? 'update' : 'keep');
+            }
+        }
+    }
 }
 
 function addOthersMeta(file: TFile, app: App) {

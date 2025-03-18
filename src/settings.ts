@@ -23,6 +23,7 @@ export interface ExMemoSettings {
 	metaUpdatedFieldName: string;
 	metaCreatedFieldName: string;
 	metaTagsPrompt: string;
+	customMetadata: Array<{key: string, value: string}>;
 }
 
 export const DEFAULT_SETTINGS: ExMemoSettings = {
@@ -48,4 +49,5 @@ export const DEFAULT_SETTINGS: ExMemoSettings = {
 	metaUpdatedFieldName: 'updated',
 	metaCreatedFieldName: 'created',
 	metaTagsPrompt: t('defaultTagsPrompt'),
+	customMetadata: [],
 }
