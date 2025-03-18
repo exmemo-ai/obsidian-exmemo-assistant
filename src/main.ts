@@ -1,5 +1,6 @@
 import { Editor, MarkdownView, Plugin } from 'obsidian';
-import { DEFAULT_SETTINGS, ExMemoSettings, ExMemoSettingTab } from './settings';
+import { DEFAULT_SETTINGS, ExMemoSettings } from './settings';
+import { ExMemoSettingTab } from './settingsTab';
 import { adjustMdMeta } from './meta';
 import { t } from "./lang/helpers"
 
