@@ -389,8 +389,12 @@ export class ExMemoSettingTab extends PluginSettingTab {
 					this.display();
 				}));
 
-		// 显示现有的自定义元数据字段
-		this.plugin.settings.customMetadata.forEach((meta, index) => {
+		interface CustomMetadata {
+			key: string;
+			value: string;
+		}
+		
+		this.plugin.settings.customMetadata.forEach((meta: CustomMetadata, index: number) => {
 			const setting = new Setting(containerEl)
 				.addText(text => text
 					.setPlaceholder(t('fieldKey'))
