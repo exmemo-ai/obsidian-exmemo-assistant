@@ -1,6 +1,7 @@
 // English
 
 export default {
+  // Basic translations
   "confirm": "Confirm",
   "yes": "Yes",
   "no": "No",
@@ -14,20 +15,22 @@ export default {
   "currentFileNotMarkdown": "The current file is not a markdown file",
   "fileAlreadyContainsTagsAndDescription": "The file already contains tags and description",
   "parseError": "Failed to parse the returned result",
-  "exmemoAdjustMeta": "Generate meta data",
-  "defaultSummaryPrompt": "Summarize the core content of the article directly without using phrases like 'this article.' The summary should be no more than 50 words, and in the same language as the content.",
   "metaUpdated": "Meta data updated",
-  //
+
+  // LLM Settings
   "llmSettings": "LLM",
   "apiKey": "API key",
   "baseUrl": "Base URL",
   "modelName": "Model name",
-  //
+
+  // Meta Update Settings
   "metaUpdateSetting": "Update meta",
   "updateMetaOptions": "Update",
   "updateMetaOptionsDesc": "If it already exists, choose whether to regenerate",
   "updateForce": "Force update existing items",
   "updateNoLLM": "Only update items that do not use LLM",
+
+  // Content Truncation Settings
   "truncateContent": "Truncate long content?",
   "truncateContentDesc": "When using LLM, whether to truncate if the content exceeds the maximum word count",
   "maxContentLength": "Maximum content length",
@@ -37,6 +40,8 @@ export default {
   "head_only": "Extract only the beginning",
   "head_tail": "Extract the beginning and the end",
   "heading": "Extract the heading and the text below it",
+
+  // Tag Settings
   "taggingOptions": "Tags",
   "taggingOptionsDesc": "Automatically generating tags",
   "extractTags": "Extract tags",
@@ -44,12 +49,18 @@ export default {
   "extract": "Extract",
   "tagList": "Tag list",
   "tagListDesc": "Optional tag list, separated by line breaks",
+  "metaTagsPrompt": "Tags Generation Prompt",  
+  "metaTagsPromptDesc": "The prompt for generating tags, where you can set the language, capitalization, etc.",
+  "defaultTagsPrompt": "Please extract up to three tags based on the following article content, and in the same language as the content.",
+
+  // Description Settings
   "description": "Description",
   "descriptionDesc": "Automatically generating article descriptions",
   "descriptionPrompt": "Prompt",
   "descriptionPromptDesc": "Prompt for generating descriptions",
+  "defaultSummaryPrompt": "Summarize the core content of the article directly without using phrases like 'this article.' The summary should be no more than 50 words, and in the same language as the content.",
 
-  // title
+  // Title Settings
   "title": "Title",
   "titleDesc": "Automatically generate document titles",
   "enableTitle": "Enable auto title generation",
@@ -57,8 +68,8 @@ export default {
   "titlePrompt": "Title prompt",
   "titlePromptDesc": "Prompt for generating titles",
   "defaultTitlePrompt": "Please generate a concise and clear title for this document, no more than 10 words, and do not use quotes.",
-  
-  // edit time
+
+  // Edit Time Settings
   "editTime": "Edit time",
   "editTimeDesc": "Automatically update the edit time of the document",
   "enableEditTime": "Enable auto update edit time",
@@ -66,7 +77,7 @@ export default {
   "editTimeFormat": "Edit time format",
   "editTimeFormatDesc": "Set the format of the edit time",
 
-  // custom fields
+  // Custom Field Names
   "customFieldNames": "Custom field names",
   "customFieldNamesDesc": "Custom field names for metadata",
   "tagsFieldName": "Tags field name",
@@ -80,9 +91,12 @@ export default {
   "createTimeFieldName": "Create time field name",
   "createTimeFieldNameDesc": "Field name used for automatically updating the create time (default: created)",
 
-  //
-  'donate': 'Donate',
-  'bugMeACoffee': 'Buy me a coffee',
-  'supportThisPlugin': 'Support this plugin',
-  'supportThisPluginDesc': 'If you find this plugin helpful, consider buying me a coffee!',
+  // Donation Related
+  "donate": "Donate",
+  "supportThisPlugin": "Support this plugin",
+  "supportThisPluginDesc": "If you find this plugin helpful, consider buying me a coffee!",
+  "bugMeACoffee": "Buy me a coffee",
+
+  // Commands
+  "exmemoAdjustMeta": "Generate meta data"
 }

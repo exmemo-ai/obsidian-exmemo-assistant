@@ -1,5 +1,3 @@
-import { PluginSettingTab, Setting, App, TextAreaComponent } from 'obsidian';
-import { loadTags } from "./utils";
 import { t } from "./lang/helpers";
 
 export interface ExMemoSettings {
@@ -24,6 +22,7 @@ export interface ExMemoSettings {
 	metaTitleFieldName: string;
 	metaUpdatedFieldName: string;
 	metaCreatedFieldName: string;
+	metaTagsPrompt: string;
 }
 
 export const DEFAULT_SETTINGS: ExMemoSettings = {
@@ -48,4 +47,5 @@ export const DEFAULT_SETTINGS: ExMemoSettings = {
 	metaTitleFieldName: 'title',
 	metaUpdatedFieldName: 'updated',
 	metaCreatedFieldName: 'created',
+	metaTagsPrompt: t('defaultTagsPrompt'),
 }

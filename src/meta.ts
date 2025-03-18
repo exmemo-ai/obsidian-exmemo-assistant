@@ -24,8 +24,11 @@ export async function adjustMdMeta(app: App, settings: ExMemoSettings) {
     // 根据更新方法决定是否强制更新
     const force = settings.metaUpdateMethod === 'force';
     
-    // 添加标签和描述
-    if (!frontMatter[settings.metaTagsFieldName] || !frontMatter[settings.metaDescriptionFieldName] || force) {
+    // 添加标签、描述和标题
+    if (!frontMatter[settings.metaTagsFieldName] || 
+        !frontMatter[settings.metaDescriptionFieldName] || 
+        (settings.metaTitleEnabled && !frontMatter[settings.metaTitleFieldName]) || 
+        force) {
         await addMetaByLLM(file, app, settings, force);
         hasChanges = true;
     }
@@ -34,20 +37,6 @@ export async function adjustMdMeta(app: App, settings: ExMemoSettings) {
     if (settings.metaUpdateMethod === 'no-llm' && !settings.metaEditTimeEnabled) {
         await addOthersMeta(file, app);
         hasChanges = true;
-    }
-    
-    // 添加标题生成逻辑 - 只在功能启用时执行
-    if (settings.metaTitleEnabled) {
-        if (!frontMatter[settings.metaTitleFieldName] || force) {
-            try {
-                const title = await generateTitle(app, settings);
-                updateFrontMatter(file, app, settings.metaTitleFieldName, title, force ? 'update' : 'keep');
-                hasChanges = true;
-            } catch (error) {
-                console.error('生成标题时出错:', error);
-                new Notice(t('llmError') + ': ' + error);
-            }
-        }
     }
     
     // 添加时间相关元数据 - 只在功能启用时执行
@@ -77,7 +66,10 @@ export async function adjustMdMeta(app: App, settings: ExMemoSettings) {
 
 async function addMetaByLLM(file: TFile, app: App, settings: ExMemoSettings, force: boolean = false) {
     const fm = app.metadataCache.getFileCache(file);
-    if (fm?.frontmatter?.[settings.metaTagsFieldName] && fm?.frontmatter[settings.metaDescriptionFieldName] && !force) {
+    if (fm?.frontmatter?.[settings.metaTagsFieldName] && 
+        fm?.frontmatter[settings.metaDescriptionFieldName] && 
+        (!settings.metaTitleEnabled || fm?.frontmatter[settings.metaTitleFieldName]) && 
+        !force) {
         console.warn(t('fileAlreadyContainsTagsAndDescription'));
         return;
     }
@@ -91,11 +83,24 @@ async function addMetaByLLM(file: TFile, app: App, settings: ExMemoSettings, for
     
     const option_list = settings.tags;
     const options = option_list.join(',');
-    const req = `Please extract up to three tags based on the following article content and generate a brief summary.
-The tags should be chosen from the following options: '${options}'. If there are no suitable tags, please create appropriate ones.
-${settings.metaDescription}
-Please return in the following format: {"tags":"tag1,tag2,tag3","description":"brief summary"}, and in the same language as the content.
-The article content is as follows:
+
+    const req = `I need to generate tags, description, and title for the following article. Requirements:
+
+1. Tags: ${settings.metaTagsPrompt}
+   Available tags: ${options}. Feel free to create new ones if none are suitable.
+
+2. Description: ${settings.metaDescription}
+
+3. Title: ${settings.metaTitlePrompt}
+
+Please return in the following JSON format:
+{
+    "tags": "tag1,tag2,tag3",
+    "description": "brief summary",
+    "title": "article title"
+}
+
+Article content:
 
 ${content_str}`;
     
@@ -105,11 +110,11 @@ ${content_str}`;
     }
     ret = ret.replace(/`/g, '');
 
-    let ret_json = {} as { tags?: string; description?: string };
+    let ret_json = {} as { tags?: string; description?: string; title?: string };
     try {
         let json_str = ret.match(/{[^]*}/);
         if (json_str) {
-            ret_json = JSON.parse(json_str[0]) as { tags?: string; description?: string };
+            ret_json = JSON.parse(json_str[0]) as { tags?: string; description?: string; title?: string };
         }        
     } catch (error) {
         new Notice(t('parseError') + "\n" + error);
@@ -125,74 +130,20 @@ ${content_str}`;
     if (ret_json.description) {
         updateFrontMatter(file, app, settings.metaDescriptionFieldName, ret_json.description, 'update');
     }
+
+    if (settings.metaTitleEnabled && ret_json.title) {
+        let title = ret_json.title.trim();
+        if ((title.startsWith('"') && title.endsWith('"')) || 
+            (title.startsWith("'") && title.endsWith("'"))) {
+            title = title.substring(1, title.length - 1);
+        }
+        updateFrontMatter(file, app, settings.metaTitleFieldName, title, force ? 'update' : 'keep');
+    }
 }
 
 function addOthersMeta(file: TFile, app: App) {
     // 移除对created字段的添加，确保只有在metaEditTimeEnabled为true时才添加时间相关元数据
     // 如果有其他元数据需要添加，可以在这里添加
-}
-
-// 生成标题的函数
-async function generateTitle(app: App, settings: ExMemoSettings): Promise<string> {
-    // 如果内容过长，根据截断设置处理
-    let processedContent = '';
-    if (settings.metaIsTruncate) {
-        processedContent = await getContent(app, null, settings.metaMaxTokens, settings.metaTruncateMethod);
-    } else {
-        processedContent = await getContent(app, null, -1, '');
-    }
-    
-    // 调用 LLM 生成标题
-    const prompt = settings.metaTitlePrompt;
-    const req = `${prompt}\n\n${processedContent}`;
-    
-    const response = await callLLM(req, settings);
-    
-    // 处理响应，确保返回的是一个有效的标题
-    let title = response.trim();
-    // 移除可能的引号
-    if ((title.startsWith('"') && title.endsWith('"')) || 
-        (title.startsWith("'") && title.endsWith("'"))) {
-        title = title.substring(1, title.length - 1);
-    }
-    
-    return title;
-}
-
-// 内容截断函数
-function truncateContent(content: string, maxTokens: number, method: string): string {
-    if (content.length <= maxTokens) {
-        return content;
-    }
-    
-    switch (method) {
-        case 'head_only':
-            // 只保留开头部分
-            return content.substring(0, maxTokens);
-            
-        case 'head_tail':
-            // 保留开头和结尾
-            const halfTokens = Math.floor(maxTokens / 2);
-            return content.substring(0, halfTokens) + 
-                   "\n...\n" + 
-                   content.substring(content.length - halfTokens);
-            
-        case 'heading':
-            // 提取标题和部分内容
-            const headings = content.match(/#{1,6}\s+.+/g) || [];
-            let result = headings.join("\n");
-            
-            // 如果标题不够长，添加一些内容
-            if (result.length < maxTokens) {
-                const remainingTokens = maxTokens - result.length;
-                result += "\n\n" + content.substring(0, remainingTokens);
-            }
-            
-            return result.substring(0, maxTokens);
-            
-        default:
-            return content.substring(0, maxTokens);
-    }
 }
 
 // 使用自定义的日期格式化函数
@@ -213,7 +164,3 @@ function formatDate(date: Date, format: string): string {
         .replace('mm', minutes)
         .replace('ss', seconds);
 }
-
-
-
-

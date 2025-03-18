@@ -153,6 +153,22 @@ export class ExMemoSettingTab extends PluginSettingTab {
 				text.inputEl.addClass('setting-textarea');
 			});
 
+			// 添加标签提示词设置
+			new Setting(containerEl)
+				.setName(t('metaTagsPrompt'))
+				.setDesc(t('metaTagsPromptDesc'))
+				.setClass('setting-item-nested')
+				.addTextArea(text => {
+					text.setPlaceholder(this.plugin.settings.metaTagsPrompt)
+						.setValue(this.plugin.settings.metaTagsPrompt)
+						.onChange(async (value) => {
+							this.plugin.settings.metaTagsPrompt = value;
+							await this.plugin.saveSettings();
+						});
+					text.inputEl.setAttr('rows', '3');
+					text.inputEl.addClass('setting-textarea');
+				});
+
 		// 描述设置部分
 		new Setting(containerEl).setName(t("description"))
 			.setDesc(t("descriptionDesc"))

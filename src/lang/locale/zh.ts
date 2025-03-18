@@ -49,6 +49,9 @@ export default {
     "extract": "提取",
     "tagList": "标签列表",
     "tagListDesc": "可选标签列表，使用回车分隔",
+    "metaTagsPrompt": "标签生成提示词",
+    "metaTagsPromptDesc": "用于生成标签的提示词，可在此设置语言、大小写等",
+    "defaultTagsPrompt": "请提取这篇文章中最合适的不超过三个标签，并使用与内容相同的语言。",
 
     // 描述设置
     "description": "描述",
