@@ -24,7 +24,7 @@ export async function adjustMdMeta(app: App, settings: ExMemoSettings) {
     // 根据更新方法决定是否强制更新
     const force = settings.metaUpdateMethod === 'force';
     
-    // 添加标签、描述和标题
+    // 添加标签、类别、描述和标题
     if (!frontMatter[settings.metaTagsFieldName] || 
         !frontMatter[settings.metaDescriptionFieldName] || 
         (settings.metaTitleEnabled && !frontMatter[settings.metaTitleFieldName]) ||
@@ -33,13 +33,7 @@ export async function adjustMdMeta(app: App, settings: ExMemoSettings) {
         await addMetaByLLM(file, app, settings, force);
         hasChanges = true;
     }
-    
-    // 只有在不使用LLM且不处理时间元数据时才添加基本元数据
-    if (settings.metaUpdateMethod === 'no-llm' && !settings.metaEditTimeEnabled) {
-        await addOthersMeta(file, app);
-        hasChanges = true;
-    }
-    
+        
     // 添加时间相关元数据 - 只在功能启用时执行
     if (settings.metaEditTimeEnabled) {
         try {
@@ -161,11 +155,6 @@ ${content_str}`;
             }
         }
     }
-}
-
-function addOthersMeta(file: TFile, app: App) {
-    // 移除对created字段的添加，确保只有在metaEditTimeEnabled为true时才添加时间相关元数据
-    // 如果有其他元数据需要添加，可以在这里添加
 }
 
 // 使用自定义的日期格式化函数

@@ -1,7 +1,6 @@
 import { PluginSettingTab, Setting, App, TextAreaComponent } from 'obsidian';
 import { loadTags } from "./utils";
 import { t } from "./lang/helpers";
-import { ExMemoSettings } from './settings';
 
 export class ExMemoSettingTab extends PluginSettingTab {
 	plugin;
