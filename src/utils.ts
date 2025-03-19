@@ -169,6 +169,7 @@ export async function getContent(app: App, file: TFile | null, limit: number = 1
             }
         }
     }
+    //console.log('base', tokens.length, 'return', splitIntoTokens(content_str).length);
     return content_str;
 }
 

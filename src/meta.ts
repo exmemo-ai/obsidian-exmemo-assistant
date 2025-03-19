@@ -26,11 +26,17 @@ export async function adjustMdMeta(app: App, settings: ExMemoSettings) {
     
     // 添加标签、类别、描述和标题
     if (!frontMatter[settings.metaTagsFieldName] || 
+        frontMatter[settings.metaTagsFieldName]?.length === 0 ||
         !frontMatter[settings.metaDescriptionFieldName] || 
-        (settings.metaTitleEnabled && !frontMatter[settings.metaTitleFieldName]) ||
-        (settings.metaCategoryEnabled && !frontMatter[settings.metaCategoryFieldName]) ||
+        frontMatter[settings.metaDescriptionFieldName]?.trim() === '' ||
+        (settings.metaTitleEnabled && 
+            (!frontMatter[settings.metaTitleFieldName] || 
+             frontMatter[settings.metaTitleFieldName]?.trim() === '')) ||
+        (settings.metaCategoryEnabled && 
+            (!frontMatter[settings.metaCategoryFieldName] || 
+             frontMatter[settings.metaCategoryFieldName]?.trim() === '')) ||
         force) {
-        await addMetaByLLM(file, app, settings, force);
+        await addMetaByLLM(file, app, settings, frontMatter, force);
         hasChanges = true;
     }
         
@@ -53,22 +59,27 @@ export async function adjustMdMeta(app: App, settings: ExMemoSettings) {
             new Notice(t('llmError') + ': ' + error);
         }
     }
-    
+
+    // 添加自定义元数据
+    if (settings.customMetadata && settings.customMetadata.length > 0) {
+        for (const meta of settings.customMetadata) {
+            if (meta.key && meta.value) {
+                let finalValue: string | boolean = meta.value;
+                if (meta.value.toLowerCase() === 'true' || meta.value.toLowerCase() === 'false') {
+                    finalValue = (meta.value.toLowerCase() === 'true') as boolean;
+                }
+                updateFrontMatter(file, app, meta.key, finalValue, force ? 'update' : 'keep');
+            }
+        }
+        hasChanges = true;
+    }    
+
     if (hasChanges) {
         new Notice(t('metaUpdated'));
     }
 }
 
-async function addMetaByLLM(file: TFile, app: App, settings: ExMemoSettings, force: boolean = false) {
-    const fm = app.metadataCache.getFileCache(file);
-    if (fm?.frontmatter?.[settings.metaTagsFieldName] && 
-        fm?.frontmatter[settings.metaDescriptionFieldName] && 
-        (!settings.metaTitleEnabled || fm?.frontmatter[settings.metaTitleFieldName]) && 
-        !force) {
-        console.warn(t('fileAlreadyContainsTagsAndDescription'));
-        return;
-    }
-    
+async function addMetaByLLM(file: TFile, app: App, settings: ExMemoSettings, frontMatter: any, force: boolean = false) {
     let content_str = '';
     if (settings.metaIsTruncate) {
         content_str = await getContent(app, null, settings.metaMaxTokens, settings.metaTruncateMethod);
@@ -76,20 +87,19 @@ async function addMetaByLLM(file: TFile, app: App, settings: ExMemoSettings, for
         content_str = await getContent(app, null, -1, '');
     }
     
-    const option_list = settings.tags;
-    const options = option_list.join(',');
-    let categories = settings.categories.join(',');
-    if (categories === '') {
-        categories = t('categoryUnknown');
+    const tag_options = settings.tags.join(',');
+    let categories_options = settings.categories.join(',');
+    if (categories_options === '') {
+        categories_options = t('categoryUnknown');
     }
 
     const req = `I need to generate tags, category, description, and title for the following article. Requirements:
 
 1. Tags: ${settings.metaTagsPrompt}
-   Available tags: ${options}. Feel free to create new ones if none are suitable.
+   Available tags: ${tag_options}. Feel free to create new ones if none are suitable.
 
 2. Category: ${settings.metaCategoryPrompt}
-   Available categories: ${categories}. Must choose ONE from the available categories.
+   Available categories: ${categories_options}. Must choose ONE from the available categories.
 
 3. Description: ${settings.metaDescription}
 
@@ -125,17 +135,24 @@ ${content_str}`;
         return;
     }
     
+    // 检查并更新各个字段
     if (ret_json.tags) {
         const tags = ret_json.tags.split(',');
         updateFrontMatter(file, app, settings.metaTagsFieldName, tags, 'append');
     }
     
     if (ret_json.category && settings.metaCategoryEnabled) {
-        updateFrontMatter(file, app, settings.metaCategoryFieldName, ret_json.category, 'update');
+        const currentValue = frontMatter[settings.metaCategoryFieldName];
+        const isEmpty = !currentValue || currentValue.trim() === '';
+        updateFrontMatter(file, app, settings.metaCategoryFieldName, ret_json.category, 
+            force || isEmpty ? 'update' : 'keep');
     }
 
     if (ret_json.description) {
-        updateFrontMatter(file, app, settings.metaDescriptionFieldName, ret_json.description, 'update');
+        const currentValue = frontMatter[settings.metaDescriptionFieldName];
+        const isEmpty = !currentValue || currentValue.trim() === '';
+        updateFrontMatter(file, app, settings.metaDescriptionFieldName, ret_json.description, 
+            force || isEmpty ? 'update' : 'keep');
     }
 
     if (settings.metaTitleEnabled && ret_json.title) {
@@ -144,16 +161,10 @@ ${content_str}`;
             (title.startsWith("'") && title.endsWith("'"))) {
             title = title.substring(1, title.length - 1);
         }
-        updateFrontMatter(file, app, settings.metaTitleFieldName, title, force ? 'update' : 'keep');
-    }
-
-    // 添加自定义元数据
-    if (settings.customMetadata && settings.customMetadata.length > 0) {
-        for (const meta of settings.customMetadata) {
-            if (meta.key && meta.value) {
-                updateFrontMatter(file, app, meta.key, meta.value, force ? 'update' : 'keep');
-            }
-        }
+        const currentValue = frontMatter[settings.metaTitleFieldName];
+        const isEmpty = !currentValue || currentValue.trim() === '';
+        updateFrontMatter(file, app, settings.metaTitleFieldName, title, 
+            force || isEmpty ? 'update' : 'keep');
     }
 }
 
