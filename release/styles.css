@@ -1,0 +1,37 @@
+.setting-textarea {
+    width: 400px;
+}
+
+.setting-item-nested {
+    margin-left: 15px;
+}
+
+.setting-item-nested-2 {
+    margin-left: 30px;
+}
+
+.dialog-button-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+}
+
+.dialog-button-container button {
+    padding: 8px 16px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.dialog-button-container.right-aligned {
+    display: flex;
+    justify-content: flex-end;
+    margin: 10px;
+}
+
+.custom-suggestion-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    width: 100%;
+}
