@@ -1,7 +1,7 @@
 {
 	"id": "exmemo-assistant",
 	"name": "ExMemo Assistant",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"minAppVersion": "1.4.5",
 	"description": "Using LLMs to manage files and generating metadata such as tags and summaries.",
 	"author": "ExMemo AI",
