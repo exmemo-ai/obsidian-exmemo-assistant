@@ -8,20 +8,30 @@ export async function callLLM(req: string, settings: ExMemoSettings): Promise<st
     let info = new Notice(t("llmLoading"), 0);
     //console.log('callLLM:', req.length, 'chars', req);
     //console.warn('callLLM:', settings.llmBaseUrl, settings.llmToken);
-    const openai = new OpenAI({
-        apiKey: settings.llmToken,
-        baseURL: settings.llmBaseUrl,
-        dangerouslyAllowBrowser: true
-    });
+
     try {
-        const completion = await openai.chat.completions.create({
-            model: settings.llmModelName,
-            messages: [
-                { "role": "user", "content": req }
-            ]
+        const response = await fetch(settings.llmBaseUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${settings.llmToken}`
+            },
+            mode: 'cors',
+            body: JSON.stringify({
+                model: settings.llmModelName,
+                messages: [
+                    { "role": "user", "content": req }
+                ]
+            })
         });
-        if (completion.choices.length > 0) {
-            ret = completion.choices[0].message['content'] || ret;
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (data.choices && data.choices.length > 0) {
+            ret = data.choices[0].message.content || ret;
         }
     } catch (error) {
         new Notice(t("llmError") + "\n" + error as string);
@@ -45,13 +55,13 @@ class ConfirmModal extends Modal {
         this.titleEl.setText(t("confirm"));
         this.contentEl.createEl('p', { text: this.message });
         const buttonContainer = this.contentEl.createEl('div', { cls: 'dialog-button-container' });
-    
+
         const yesButton = buttonContainer.createEl('button', { text: t("yes") });
         yesButton.onclick = () => {
             this.close();
             this.resolvePromise(true);
         };
-    
+
         const noButton = buttonContainer.createEl('button', { text: t("no") });
         noButton.onclick = () => {
             this.close();
