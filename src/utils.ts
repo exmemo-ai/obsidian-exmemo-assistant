@@ -1,6 +1,5 @@
 import { App, TFile, MarkdownView, Modal, Notice, getAllTags } from 'obsidian';
-import OpenAI from "openai";
-import { ExMemoSettings } from "./settings";
+import { ExMemoSettings, LLMProvider } from "./settings";
 import { t } from "./lang/helpers"
 
 export async function callLLM(req: string, settings: ExMemoSettings): Promise<string> {
@@ -10,15 +9,56 @@ export async function callLLM(req: string, settings: ExMemoSettings): Promise<st
     //console.warn('callLLM:', settings.llmBaseUrl, settings.llmToken);
 
     try {
-        const response = await fetch(settings.llmBaseUrl, {
+        // 获取当前选择的 LLM 提供商
+        const providerId = settings.currentLLMProvider;
+        const provider = settings.llmProviders.find(p => p.id === providerId);
+
+        if (!provider) {
+            throw new Error(t("noProviderSelected"));
+        }
+
+        // 更彻底地构建 API URL，完全避免路径重复问题
+        let baseUrl = provider.baseUrl || '';
+        let endpoint = provider.endpoint || '';
+
+        // 处理 baseUrl
+        // 1. 移除末尾的 /v1 路径（如果有）
+        if (baseUrl.endsWith('/v1/')) {
+            baseUrl = baseUrl.substring(0, baseUrl.length - 4);
+        } else if (baseUrl.endsWith('/v1')) {
+            baseUrl = baseUrl.substring(0, baseUrl.length - 3);
+        }
+
+        // 2. 确保 baseUrl 不以斜杠结尾
+        if (baseUrl.endsWith('/')) {
+            baseUrl = baseUrl.substring(0, baseUrl.length - 1);
+        }
+
+        // 处理 endpoint
+        // 1. 确保 endpoint 以斜杠开头
+        if (!endpoint.startsWith('/')) {
+            endpoint = '/' + endpoint;
+        }
+
+        // 2. 避免重复的 /v1/chat/completions 路径
+        if (endpoint.includes('/v1/chat/completions') && baseUrl.includes('/v1/chat/completions')) {
+            // 检测重复并移除一个
+            endpoint = '';
+        }
+
+        // 完整 URL
+        const apiUrl = baseUrl + endpoint;
+        console.log('API URL:', apiUrl); // 调试输出
+
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${settings.llmToken}`
+                'Authorization': `Bearer ${provider.token}`
             },
             mode: 'cors',
             body: JSON.stringify({
-                model: settings.llmModelName,
+                model: provider.modelName,
                 messages: [
                     { "role": "user", "content": req }
                 ]
