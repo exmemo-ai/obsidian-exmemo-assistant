@@ -4,7 +4,12 @@ English | [中文简体](https://github.com/exmemo-ai/obsidian-exmemo-assistant/
 
 ExMemo Assistant provides intelligent document management features. Leveraging the capabilities of large language models (LLM), it generates and updates file metadata automatically, thereby achieving efficient information management and document editing.
 
-Insert the currently selected content into the appropriate position in the current document.
+Generate and update file metadata, including tags, descriptions, titles, edit times, etc.
+
+> **Important Note**: The plugin [obsidian-exmemo-tools](https://github.com/exmemo-ai/obsidian-exmemo-tools/) now covers all the features supported by this project and adds more functionality. Future development and updates will focus on exmemo-tools, so we recommend migrating to that tool.
+
+### Tool Usage Video Tutorial
+[![Watch the video](https://img.youtube.com/vi/5naS9p8a1IE/hqdefault.jpg)](https://www.youtube.com/watch?v=5naS9p8a1IE)
 
 ## Usage
 
