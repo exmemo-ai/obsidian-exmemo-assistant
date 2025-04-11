@@ -1,6 +1,5 @@
 import { App, TFile, MarkdownView, Modal, Notice, getAllTags } from 'obsidian';
-import OpenAI from "openai";
-import { ExMemoSettings } from "./settings";
+import { ExMemoSettings, LLMProvider } from "./settings";
 import { t } from "./lang/helpers"
 
 export async function callLLM(req: string, settings: ExMemoSettings): Promise<string> {
@@ -8,20 +7,71 @@ export async function callLLM(req: string, settings: ExMemoSettings): Promise<st
     let info = new Notice(t("llmLoading"), 0);
     //console.log('callLLM:', req.length, 'chars', req);
     //console.warn('callLLM:', settings.llmBaseUrl, settings.llmToken);
-    const openai = new OpenAI({
-        apiKey: settings.llmToken,
-        baseURL: settings.llmBaseUrl,
-        dangerouslyAllowBrowser: true
-    });
+
     try {
-        const completion = await openai.chat.completions.create({
-            model: settings.llmModelName,
-            messages: [
-                { "role": "user", "content": req }
-            ]
+        // 获取当前选择的 LLM 提供商
+        const providerId = settings.currentLLMProvider;
+        const provider = settings.llmProviders.find(p => p.id === providerId);
+
+        if (!provider) {
+            throw new Error(t("noProviderSelected"));
+        }
+
+        // 更彻底地构建 API URL，完全避免路径重复问题
+        let baseUrl = provider.baseUrl || '';
+        let endpoint = provider.endpoint || '';
+
+        // 处理 baseUrl
+        // 1. 移除末尾的 /v1 路径（如果有）
+        if (baseUrl.endsWith('/v1/')) {
+            baseUrl = baseUrl.substring(0, baseUrl.length - 4);
+        } else if (baseUrl.endsWith('/v1')) {
+            baseUrl = baseUrl.substring(0, baseUrl.length - 3);
+        }
+
+        // 2. 确保 baseUrl 不以斜杠结尾
+        if (baseUrl.endsWith('/')) {
+            baseUrl = baseUrl.substring(0, baseUrl.length - 1);
+        }
+
+        // 处理 endpoint
+        // 1. 确保 endpoint 以斜杠开头
+        if (!endpoint.startsWith('/')) {
+            endpoint = '/' + endpoint;
+        }
+
+        // 2. 避免重复的 /v1/chat/completions 路径
+        if (endpoint.includes('/v1/chat/completions') && baseUrl.includes('/v1/chat/completions')) {
+            // 检测重复并移除一个
+            endpoint = '';
+        }
+
+        // 完整 URL
+        const apiUrl = baseUrl + endpoint;
+        console.log('API URL:', apiUrl); // 调试输出
+
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${provider.token}`
+            },
+            mode: 'cors',
+            body: JSON.stringify({
+                model: provider.modelName,
+                messages: [
+                    { "role": "user", "content": req }
+                ]
+            })
         });
-        if (completion.choices.length > 0) {
-            ret = completion.choices[0].message['content'] || ret;
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (data.choices && data.choices.length > 0) {
+            ret = data.choices[0].message.content || ret;
         }
     } catch (error) {
         new Notice(t("llmError") + "\n" + error as string);
@@ -45,13 +95,13 @@ class ConfirmModal extends Modal {
         this.titleEl.setText(t("confirm"));
         this.contentEl.createEl('p', { text: this.message });
         const buttonContainer = this.contentEl.createEl('div', { cls: 'dialog-button-container' });
-    
+
         const yesButton = buttonContainer.createEl('button', { text: t("yes") });
         yesButton.onclick = () => {
             this.close();
             this.resolvePromise(true);
         };
-    
+
         const noButton = buttonContainer.createEl('button', { text: t("no") });
         noButton.onclick = () => {
             this.close();
@@ -181,12 +231,12 @@ export function updateFrontMatter(file: TFile, app: App, key: string, value: any
         if (method === `append`) {
             let old_value = frontmatter[key];
             if (typeof value === 'string') {
-                if (old_value === undefined) {
+                if (old_value === undefined || old_value === null) {
                     old_value = '';
                 }
                 frontmatter[key] = old_value + value;
             } else if (Array.isArray(value)) {
-                if (old_value === undefined) {
+                if (old_value === undefined || old_value === null || !Array.isArray(old_value)) {
                     old_value = [];
                 }
                 const new_value = old_value.concat(value);
@@ -197,7 +247,7 @@ export function updateFrontMatter(file: TFile, app: App, key: string, value: any
             frontmatter[key] = value;
         } else { // keep: keep_if_exists
             let old_value = frontmatter[key];
-            if (old_value !== undefined) {
+            if (old_value !== undefined && old_value !== null) {
                 return;
             }
             frontmatter[key] = value;
