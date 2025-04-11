@@ -4,6 +4,11 @@ ExMemo Assistant 提供智能化的文档管理功能。结合大型语言模型
 
 生成并更新文件的元信息，包括标签、简述、标题、编辑时间等。
 
+> **重要提示**：插件 [obsidian-exmemo-tools](https://github.com/exmemo-ai/obsidian-exmemo-tools/) 的功能目前已涵盖本项目所支持的所有内容，并新增了更多功能。后续开发和更新将以 exmemo-tools 为主，建议您迁移使用该工具。
+
+### tools 使用方法视频介绍
+[![B站_使用方法视频](./images/video.png)](https://www.bilibili.com/video/BV1podNYvEod)
+
 ## 使用方法
 
 ### 设置
